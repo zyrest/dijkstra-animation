@@ -3,7 +3,7 @@
 .idea/**/tasks.xml
 .idea/dictionaries
 
-.idea/*.xml
+.idea/
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/

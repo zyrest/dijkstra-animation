@@ -6,13 +6,15 @@
 # my_list[0][0] = 11
 # print(my_list)
 
+from algorithm.data_stuct import *
+from algorithm import dijkstra
+
 
 def test_matrix_network():
     Maxx = float("inf")
-    from algorithm.data_stuct import MatrixDirectNetwork, Edge
-
     netwk = MatrixDirectNetwork(5)
-    e = Edge(2, 2, 999999)
+
+    e = Edge(2, 3, 999999)
     netwk.add_edit_edge(e)
 
     e.start = 3
@@ -24,29 +26,53 @@ def test_matrix_network():
     print()
 
     e.start = 2
-    e.end = 2
+    e.end = 3
     e.value = Maxx
     netwk.delete_edge(e)
     netwk.show()
 
 
 def test_list():
-    a = [list() for i in range(12)]
+    netwk = ListDirectNetwork(5)
 
-    a[0].append("nihao")
-    a[1].append(9642)
+    e = Edge(2, 2, 999999)
+    netwk.add_edit_edge(e)
 
-    a[8].append('bullshit')
+    e = Edge(3, 2, 555)
+    netwk.add_edit_edge(e)
 
-    a[10].append((1, 3, 6))
-    a[10].append("blablabla")
+    e = Edge(3, 2)
+    print(netwk.get_edge_value(e))
+    netwk.show()
 
-    print(a[10][0][6])
+
+def test_dijkstra():
+    netwk = MatrixDirectNetwork(5)
+
+    e = Edge(1, 2, 1)
+    netwk.add_edit_edge(e)
+
+    e = Edge(1, 5, 13)
+    netwk.add_edit_edge(e)
+
+    e = Edge(2, 3, 20)
+    netwk.add_edit_edge(e)
+
+    e = Edge(2, 5, 99)
+    netwk.add_edit_edge(e)
+
+    e = Edge(3, 1, 9)
+    netwk.add_edit_edge(e)
+
+    e = Edge(3, 4, 3)
+    netwk.add_edit_edge(e)
+
+    e = Edge(5, 3, 10)
+    netwk.add_edit_edge(e)
+
+    dijkstra.matrix_dijkstra(1, netwk)
 
 
 if __name__ == '__main__':
-    flags = [False] * 11
-    flags[0] = True
-    for index, value in enumerate(flags):
-        print('{}: is {}'.format(index, value))
+    test_matrix_network()
     # test_matrix_network()

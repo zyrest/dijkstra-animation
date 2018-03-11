@@ -6,6 +6,7 @@ def matrix_dijkstra(start_pts, matrix_net):
     pts = matrix_net.pts
 
     # 初始化
+    start_pts = start_pts - 1
     dis = [MAX_INF] * pts  # 初始化起点到各个点的距离
     flags = [False] * pts  # 是否到过某点
     dis[start_pts] = 0
@@ -31,12 +32,16 @@ def matrix_dijkstra(start_pts, matrix_net):
             if one_to_other + dis[min_index] < dis[inx]:
                 dis[inx] = one_to_other + dis[min_index]
 
+    for i, final_dist in enumerate(dis):
+        print("from {} to {}, the shortest distance is {}".format(start_pts+1, i+1, final_dist))
+
 
 def linear_dijkstra(start_pts, linear_net):
     linear = linear_net.list_array
     pts = linear_net.pts
 
     # 初始化
+    start_pts = start_pts - 1
     dist = [MAX_INF] * pts
     flags = [False] * pts
     dist[start_pts] = 0
@@ -61,3 +66,6 @@ def linear_dijkstra(start_pts, linear_net):
             st_to_end = dist[one_to_other[0]]   # 松弛前的距离值
             if min_dist + one_to_other[1] < st_to_end:
                 dist[one_to_other[0]] = min_dist + one_to_other[1]  # 更新
+
+    for i, final_dist in enumerate(dist):
+        print("{} to {}, the shortest distance is {}".format(start_pts+1, i+1, final_dist))
