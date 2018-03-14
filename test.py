@@ -74,5 +74,5 @@ def test_dijkstra():
 
 
 if __name__ == '__main__':
-    test_matrix_network()
+    test_dijkstra()
     # test_matrix_network()
