@@ -7,44 +7,239 @@
     <script src="../static/jquery-3.3.1.js"></script>
 </head>
 <body>
-    <canvas id="c" width="1000" height="800"></canvas>
+    <canvas id="c" width="600" height="600"></canvas>
 </body>
 
 <script>
-    var canvas = new fabric.Canvas("c", {backgroundColor: 'blue'});
-    // var path = new fabric.Path('M 0 0 L 200 100 L 170 200 z');
-    // path.set({fill:'red' });
-    // canvas.add(path);
+    var circleCount = 0;
+    var lineCount = 1;
 
-    /*
-    var rect = new fabric.Rect({
-        left: 770,
-        top: 100,
-        fill: 'red',
-        width: 30,
-        height: 30
+    fabric.LineArrow = fabric.util.createClass(fabric.Line, {
+        type: 'lineArrow',
+
+        initialize: function(element, options) {
+            options || (options = {});
+            this.callSuper('initialize', element, options);
+        },
+
+        toObject: function() {
+            return fabric.util.object.extend(this.callSuper('toObject'), {
+                label: this.get('label')
+            });
+        },
+
+        _render: function(ctx){
+            this.callSuper('_render', ctx);
+
+            // do not render if width/height are zeros or object is not visible
+            if (this.width === 0 || this.height === 0 || !this.visible) return;
+
+            ctx.save();
+
+            var xDiff = this.x2 - this.x1;
+            var yDiff = this.y2 - this.y1;
+            var angle = Math.atan2(yDiff, xDiff);
+            ctx.translate((this.x2 - this.x1) / 2, (this.y2 - this.y1) / 2);
+            ctx.rotate(angle);
+            ctx.beginPath();
+            //move 10px in front of line to start the arrow so it does not have the square line end showing in front (0,0)
+            ctx.moveTo(10, 0);
+            ctx.lineTo(-30, 8);
+            ctx.lineTo(-30, -8);
+            ctx.closePath();
+            ctx.fillStyle = this.stroke;
+
+            this.width = Math.abs(this.x2 - this.x1);
+            this.height = Math.abs(this.y2 - this.y1);
+            ctx.font = '15px Helvetica';
+            ctx.fillText(this.label, -(this.width/2) - 70, -5);
+
+            ctx.fill();
+            ctx.restore();
+        }
     });
 
-    canvas.add(rect)
-    */
+    fabric.LineArrow.fromObject = function (object, callback) {
+        callback && callback(new fabric.LineArrow([object.x1, object.y1, object.x2, object.y2], object));
+    };
 
-    function resizeCanvas() {
-        canvas.setWidth($(window).get(0).innerWidth);
-        canvas.setHeight($(window).get(0).innerHeight);
-    }
+    fabric.LineArrow.async = true;
 
     $(function () {
-        var rect = new fabric.Rect({
-            left: 770,
-            top: 100,
-            fill: 'red',
-            width: 30,
-            height: 30
+
+        var canvas = this.__canvas = new fabric.Canvas('c', { selection: false });
+
+        fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+
+        function makeCircle(left, top, line1, line2, line3, line4) {
+            var c = new fabric.Circle({
+                strokeWidth: 5,
+                radius: 12,
+                fill: '#fff',
+                stroke: '#666',
+                originX: 'center',
+                originY: 'center',
+                hasControls: false,
+                hasBorders: false
+            });
+
+            var t = new fabric.Text(String(circleCount++), {
+                fontSize: 14,
+                originX: 'center',
+                originY: 'center'
+            });
+
+            var g = new fabric.Group([c, t], {
+                left: left,
+                top: top,
+                hasControls: false,
+                hasBorders: false
+                //selectable: false
+            });
+
+            g.line1 = line1;
+            g.line2 = line2;
+            g.line3 = line3;
+            g.line4 = line4;
+            return g;
+        }
+
+        function makeLine(coords) {
+            /*
+            var x111 = coords[0];
+            var y111 = coords[1];
+            var x222 = coords[2];
+            var y222 = coords[3];
+
+            var t = new fabric.Text(String(lineCount++), {
+                fontSize: 14,
+                originX: 'center',
+                originY: 'center',
+                top: (y111 + y222) / 2,
+                left: (x111 + x222) / 2
+            });
+            */
+
+            var l = new fabric.LineArrow(coords, {
+                fill: 'red',
+                stroke: 'red',
+                strokeWidth: 5,
+                label: "lalala",
+                selectable: false
+            });
+
+            //var g = new fabric.Group([l, t], {
+            //    hasControls: false,
+            //    hasBorders: false,
+            //    selectable: false
+            //});
+
+            return l;
+        }
+
+
+        var line = makeLine([ 50, 50, 270, 60 ]),
+            line2 = makeLine([ 270, 60, 250, 250 ]),
+            line3 = makeLine([ 250, 250, 350, 440]),
+            line4 = makeLine([ 250, 250, 80, 440]),
+            line5 = makeLine([ 270, 60, 75, 225 ]),
+            line6 = makeLine([ 270, 60, 375, 225 ]);
+
+        canvas.add(line, line2, line3, line4, line5, line6);
+
+        canvas.add(
+            makeCircle(line.get('x1'), line.get('y1'), null, line),
+            makeCircle(line.get('x2'), line.get('y2'), line, line2, line5, line6),
+            makeCircle(line2.get('x2'), line2.get('y2'), line2, line3, line4),
+            makeCircle(line3.get('x2'), line3.get('y2'), line3),
+            makeCircle(line4.get('x2'), line4.get('y2'), line4),
+            makeCircle(line5.get('x2'), line5.get('y2'), line5),
+            makeCircle(line6.get('x2'), line6.get('y2'), line6)
+        );
+
+        /*
+        canvas.add(
+            makeCircle(line.item(0).get('x1'), line.item(0).get('y1'), null, line),
+            makeCircle(line.item(0).get('x2'), line.item(0).get('y2'), line, line2, line5, line6),
+            makeCircle(line2.item(0).get('x2'), line2.item(0).get('y2'), line2, line3, line4),
+            makeCircle(line3.item(0).get('x2'), line3.item(0).get('y2'), line3),
+            makeCircle(line4.item(0).get('x2'), line4.item(0).get('y2'), line4),
+            makeCircle(line5.item(0).get('x2'), line5.item(0).get('y2'), line5),
+            makeCircle(line6.item(0).get('x2'), line6.item(0).get('y2'), line6)
+        );
+        */
+
+        canvas.on('object:moving', function(e) {
+            var p = e.target;
+
+            p.line1 && p.line1.set({ 'x2': p.left, 'y2': p.top });
+            p.line2 && p.line2.set({ 'x1': p.left, 'y1': p.top });
+            p.line3 && p.line3.set({ 'x1': p.left, 'y1': p.top });
+            p.line4 && p.line4.set({ 'x1': p.left, 'y1': p.top });
+
+            //changeLine(p);
+            canvas.renderAll();
         });
 
-        canvas.add(rect);
+        function changeLine(target) {
+            console.log(target.left + "  " + target.top);
+            if (target.line1) {
+                var realLine = target.line1.item(0);
+                var realText = target.line1.item(1);
 
-        $(window).resize(resizeCanvas())
+                realLine.set({'x2': target.left, 'y2': target.top});
+
+                //alert("one: " + target.left+" "+target.top);
+                var x111 = realLine.x1;
+                var y111 = realLine.y1;
+                var x222 = realLine.x2;
+                var y222 = realLine.y2;
+                realText.set({top: (y111 + y222) / 2, left: (x111 + x222) / 2});
+            }
+            if (target.line2) {
+                var realLine = target.line2.item(0);
+                var realText = target.line2.item(1);
+
+                realLine.set({'x1': target.left, 'y1': target.top});
+
+                var x111 = realLine.x1;
+                var y111 = realLine.y1;
+                var x222 = realLine.x2;
+                var y222 = realLine.y2;
+                realText.set({top: (y111 + y222) / 2, left: (x111 + x222) / 2});
+                //alert("two: " + target.left+" "+target.top);
+            }
+            if (target.line3) {
+                var realLine = target.line3.item(0);
+                var realText = target.line3.item(1);
+
+                realLine.set({'x1': target.left, 'y1': target.top});
+
+                var x111 = realLine.x1;
+                var y111 = realLine.y1;
+                var x222 = realLine.x2;
+                var y222 = realLine.y2;
+                realText.set({top: (y111 + y222) / 2, left: (x111 + x222) / 2});
+                //alert("three: " + target.left+" "+target.top);
+            }
+            if (target.line4) {
+                var realLine = target.line4.item(0);
+                var realText = target.line4.item(1);
+
+                realLine.set({'x1': target.left, 'y1': target.top});
+
+                var x111 = realLine.x1;
+                var y111 = realLine.y1;
+                var x222 = realLine.x2;
+                var y222 = realLine.y2;
+                realText.set({top: (y111 + y222) / 2, left: (x111 + x222) / 2});
+                //alert("four: " + target.left+" "+target.top);
+            }
+        }
     })
+</script>
+
+<script type="text/javascript">
+
 </script>
 </html>
