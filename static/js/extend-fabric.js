@@ -29,8 +29,8 @@ fabric.LineArrow = fabric.util.createClass(fabric.Line, {
         ctx.beginPath();
         //move 10px in front of line to start the arrow so it does not have the square line end showing in front (0,0)
         ctx.moveTo(10, 0);
-        ctx.lineTo(-30, 8);
-        ctx.lineTo(-30, -8);
+        ctx.lineTo(-25, 5);
+        ctx.lineTo(-25, -5);
         ctx.closePath();
         ctx.fillStyle = this.stroke;
 

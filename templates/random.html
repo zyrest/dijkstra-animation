@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/js/fabric.js"></script>
+    <script src="../static/js/jquery-3.3.1.js"></script>
+    <script src="../static/js/extend-fabric.js"></script>
+</head>
+<body>
+    <canvas id="c" width="600" height="600"></canvas>
+    <div>
+
+    </div>
+</body>
+
+<script>
+    function makeCircle(labelText, left, top, inLine, outLine) {
+        var c = new fabric.Circle({
+            strokeWidth: 5,
+            radius: 12,
+            fill: '#fff',
+            stroke: '#666',
+            originX: 'center',
+            originY: 'center',
+            hasControls: false,
+            hasBorders: false
+        });
+
+        var t = new fabric.Text(labelText, {
+            fontSize: 14,
+            originX: 'center',
+            originY: 'center'
+        });
+
+        var g = new fabric.Group([c, t], {
+            left: left,
+            top: top,
+            hasControls: false,
+            hasBorders: false
+            //selectable: false
+        });
+
+        g.inLine = inLine;
+        g.outLine = outLine;
+        return g;
+    }
+
+    function makeLine(coords, labelValue) {
+        return new fabric.LineArrow(coords, {
+            fill: 'grey',
+            stroke: 'grey',
+            strokeWidth: 1,
+            label: labelValue,
+            selectable: false
+        });
+    }
+</script>
+
+<script>
+
+    function initLineCircle(canvas) {
+        var totalLineCount = Math.ceil(Math.random() * 13) + 7;
+        var totalCircleCount = 7;
+
+        var MAX_INF = Number.MAX_VALUE;
+
+        var matrix = []; //记录边的权值
+
+        var line = []; //所有线的集合, 对象是fabric.Line
+        var lineFrom = []; //每条线的起点 0-6
+        var lineTo = []; //每条线的终点 0-6
+
+        var circle = []; //说有点的集合
+        var circleX = [50, 270, 250, 350, 80,  90,  375]; // 每个点的left坐标
+        var circleY = [50, 60,  250, 440, 440, 225, 225]; // 每个点的top坐标
+
+        for(var i = 0; i < totalCircleCount; i++) { // 初始化二维矩阵数组
+            matrix[i] = [];
+            for(var j = 0; j < totalCircleCount; j++) {
+                matrix[i][j] = MAX_INF;
+            }
+        }
+
+        var circleCount = 1;
+
+        var value = [];
+        for(var k = 0; k < totalLineCount; k++) {
+            value[k] = Math.ceil(Math.random() * 30);
+
+            var frm = Math.floor(Math.random() * totalCircleCount);
+            var to2 = Math.floor(Math.random() * totalCircleCount);
+
+            for (var l = 0; l < k; l++) {
+                if (lineFrom[l] == frm && lineTo[l] == to2) {
+                    frm = Math.floor(Math.random() * totalCircleCount);
+                    to2 = Math.floor(Math.random() * totalCircleCount);
+
+                    l = 0;
+                }
+            }
+
+            lineFrom[k] = frm;
+            lineTo[k] = to2;
+
+            line[k] = makeLine([circleX[frm], circleY[frm], circleX[to2], circleY[to2]], String(value[k]));
+            canvas.add(line[k]);
+            matrix[frm][to2] = value[k];
+        }
+
+        for (var c = 0; c < totalCircleCount; c++) {
+            var inLine = new Array();
+            var outLine = new Array();
+
+            for (var l_ = 0; l_ < totalLineCount; l_++) {
+                if (lineTo[l_] == c)
+                    inLine.push(line[l_]);
+
+                if (lineFrom[l_] == c)
+                    outLine.push(line[l_]);
+            }
+
+            circle[c] = makeCircle(String(circleCount++), circleX[c], circleY[c], inLine, outLine);
+            canvas.add(circle[c])
+        }
+    }
+
+
+    $(function () {
+        var canvas = this.__canvas = new fabric.Canvas('c', { selection: false });
+
+        fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+
+        initLineCircle(canvas);
+
+        canvas.on('object:moving', function(e) {
+            var p = e.target;
+
+            var inLine = p.inLine;
+            var outLine = p.outLine;
+
+            inLine.forEach(function (value) {
+                value.set({ 'x2': p.left, 'y2': p.top })
+            });
+
+            outLine.forEach(function (value) {
+                value.set({ 'x1': p.left, 'y1': p.top })
+            });
+
+            //changeLine(p);
+            canvas.renderAll();
+        });
+
+    })
+
+</script>
+
+<script type="text/javascript">
+
+</script>
+</html>

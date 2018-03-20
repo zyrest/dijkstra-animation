@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="../static/fabric.js"></script>
-    <script src="../static/jquery-3.3.1.js"></script>
-    <script src="../static/extend-fabric.js"></script>
+    <script src="../static/js/fabric.js"></script>
+    <script src="../static/js/jquery-3.3.1.js"></script>
+    <script src="../static/js/extend-fabric.js"></script>
 </head>
 <body>
     <canvas id="c" width="600" height="600"></canvas>
@@ -17,6 +17,8 @@
     var MAX_INF = Number.MAX_VALUE;
 
     var matrix = [];
+    var line = [];
+
     for(var i = 0; i < 7; i++) {        //一维长度为3
         matrix[i] = [];
         for(var j = 0; j < 7; j++) {    //二维长度为5
@@ -84,22 +86,22 @@
 
         fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
-        var line = makeLine([ 50, 50, 270, 60 ]),
-            line2 = makeLine([ 270, 60, 250, 250 ]),
-            line3 = makeLine([ 250, 250, 350, 440]),
-            line4 = makeLine([ 250, 250, 80, 440]),
-            line5 = makeLine([ 270, 60, 75, 225 ]),
-            line6 = makeLine([ 270, 60, 375, 225 ]);
+        line[0] = makeLine([ 50, 50, 270, 60 ]);
+        line[1] = makeLine([ 270, 60, 250, 250 ]);
+        line[2] = makeLine([ 250, 250, 350, 440]);
+        line[3] = makeLine([ 250, 250, 80, 440]);
+        line[4] = makeLine([ 270, 60, 75, 225 ]);
+        line[5] = makeLine([ 270, 60, 375, 225 ]);
 
-        canvas.add(line, line2, line3, line4, line5, line6);
+        canvas.add(line[0], line[1], line[2], line[3], line[4], line[5]);
 
-        var circle = makeCircle(line.get('x1'), line.get('y1'), null, line),
-            circle2 = makeCircle(line.get('x2'), line.get('y2'), line, line2, line5, line6),
-            circle3 = makeCircle(line2.get('x2'), line2.get('y2'), line2, line3, line4),
-            circle4 = makeCircle(line3.get('x2'), line3.get('y2'), line3),
-            circle5 = makeCircle(line4.get('x2'), line4.get('y2'), line4),
-            circle6 = makeCircle(line5.get('x2'), line5.get('y2'), line5),
-            circle7 = makeCircle(line6.get('x2'), line6.get('y2'), line6);
+        var circle = makeCircle(line[0].get('x1'), line[0].get('y1'), null, line[0]),
+            circle2 = makeCircle(line[0].get('x2'), line[0].get('y2'), line[0], line[1], line[4], line[5]),
+            circle3 = makeCircle(line[1].get('x2'), line[1].get('y2'), line[1], line[2], line[3]),
+            circle4 = makeCircle(line[2].get('x2'), line[2].get('y2'), line[2]),
+            circle5 = makeCircle(line[3].get('x2'), line[3].get('y2'), line[3]),
+            circle6 = makeCircle(line[4].get('x2'), line[4].get('y2'), line[4]),
+            circle7 = makeCircle(line[5].get('x2'), line[5].get('y2'), line[5]);
 
         canvas.add(circle, circle2, circle3, circle4, circle5, circle6, circle7);
 
@@ -115,7 +117,11 @@
             canvas.renderAll();
         });
 
+
+
+
     })
+
 </script>
 
 <script type="text/javascript">

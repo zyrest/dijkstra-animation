@@ -245,8 +245,7 @@
         canvas.renderAll();
     });
     })();
-    </script>
-    <script>
+
     function addcircle(){
     var c = new fabric.Circle({
     left: 100,
