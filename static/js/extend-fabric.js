@@ -33,12 +33,13 @@ fabric.LineArrow = fabric.util.createClass(fabric.Line, {
         ctx.lineTo(-25, -5);
         ctx.closePath();
         ctx.fillStyle = this.stroke;
-
         this.width = Math.abs(this.x2 - this.x1);
         this.height = Math.abs(this.y2 - this.y1);
-        ctx.font = '15px Helvetica';
-        ctx.fillText(this.label, -110, -5);
 
+        if (this.label) {
+            ctx.font = '15px Helvetica';
+            ctx.fillText(this.label, -110, -5);
+        }
         ctx.fill();
         ctx.restore();
     }
@@ -49,3 +50,44 @@ fabric.LineArrow.fromObject = function (object, callback) {
 };
 
 fabric.LineArrow.async = true;
+
+function makeCircle(labelText, left, top, inLine, outLine) {
+    var c = new fabric.Circle({
+        strokeWidth: 5,
+        radius: 12,
+        fill: '#fff',
+        stroke: '#666',
+        originX: 'center',
+        originY: 'center',
+        hasControls: false,
+        hasBorders: false
+    });
+
+    var t = new fabric.Text(labelText, {
+        fontSize: 14,
+        originX: 'center',
+        originY: 'center'
+    });
+
+    var g = new fabric.Group([c, t], {
+        left: left,
+        top: top,
+        hasControls: false,
+        hasBorders: false
+        //selectable: false
+    });
+
+    g.inLine = inLine;
+    g.outLine = outLine;
+    return g;
+}
+
+function makeLine(coords, labelValue) {
+    return new fabric.LineArrow(coords, {
+        fill: 'grey',
+        stroke: 'grey',
+        strokeWidth: 1,
+        label: labelValue,
+        selectable: false
+    });
+}

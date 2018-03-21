@@ -39,46 +39,7 @@ var dist = [];
 var flag = [];
 var path = [];
 
-function makeCircle(labelText, left, top, inLine, outLine) {
-    var c = new fabric.Circle({
-        strokeWidth: 5,
-        radius: 12,
-        fill: '#fff',
-        stroke: '#666',
-        originX: 'center',
-        originY: 'center',
-        hasControls: false,
-        hasBorders: false
-    });
 
-    var t = new fabric.Text(labelText, {
-        fontSize: 14,
-        originX: 'center',
-        originY: 'center'
-    });
-
-    var g = new fabric.Group([c, t], {
-        left: left,
-        top: top,
-        hasControls: false,
-        hasBorders: false
-        //selectable: false
-    });
-
-    g.inLine = inLine;
-    g.outLine = outLine;
-    return g;
-}
-
-function makeLine(coords, labelValue) {
-    return new fabric.LineArrow(coords, {
-        fill: 'grey',
-        stroke: 'grey',
-        strokeWidth: 1,
-        label: labelValue,
-        selectable: false
-    });
-}
 
 function makeAction(start, end, nowDist, nowPath, isStartOver) { // 令start, end点变红闪烁, 连接两点的线段变红
 
@@ -123,7 +84,7 @@ function makeAction(start, end, nowDist, nowPath, isStartOver) { // 令start, en
     }
 }
 
-function initLineCircle(canvas) {
+function initLineCircle() {
     for(var i = 0; i < totalCircleCount; i++) { // 初始化二维矩阵数组
         matrix[i] = [];
         for(var j = 0; j < totalCircleCount; j++) {
