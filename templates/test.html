@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+
+<script>
+
+    function sleep(delay) {
+        var start = (new Date()).getTime();
+        while ((new Date()).getTime() - start < delay) {
+            continue;
+        }
+    }
+
+    function testTimeout() {
+        for (var a = 0; a < 4; a++) {
+            console.log("now is a " + a);
+            sleep(1000);
+            console.log("if suck? " + a);
+        }
+    }
+
+    var Common = function () {
+        var sleep = function (second, callback) {
+            if(typeof callback == 'function') {
+                setTimeout(callback, second*1000);
+            }
+        };
+        return {
+            sleep: function (second,callback) {
+                sleep(second,callback);
+            }
+        }
+    }();
+
+
+    var f1 = function (callback) {
+        console.log(1);
+        callback()
+    };
+    var f2 = function (callback) {
+        console.log(2)
+        callback()
+    };
+    var f3 = function (callback) {
+        console.log(3)
+        callback()
+    };
+    var f4 = function (callback) {
+        console.log(4)
+        callback()
+    };
+    var queue = [f1, f2, f3, f4];
+
+    function showQ() {
+        queue[0](queue[1])
+    }
+    showQ();
+
+
+</script>
+</html>
