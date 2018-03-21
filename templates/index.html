@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <title>Dijkstra算法演示</title>
+
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
+    <link href="../static/css/custom.css" rel="stylesheet">
+
+    <style>
+        .main-display {
+            margin-top: 50px;
+        }
+        .answer-table {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="site-header sticky-top py-1">
+    <div class="container d-flex flex-column flex-md-row justify-content-between">
+        <a class="py-2" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mx-auto"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg>
+        </a>
+        <a class="py-2 d-none d-md-inline-block active" href="#">动态演示</a>
+        <a class="py-2 d-none d-md-inline-block" href="advanced.html">高级演示</a>
+        <a class="py-2 d-none d-md-inline-block" href="algorithm.html">算法思想</a>
+        <a class="py-2 d-none d-md-inline-block" href="about.html">关于本站</a>
+        <span class="navbar-text" style="color: #999">
+            详细的Dijkstra算法讲解
+        </span>
+    </div>
+</nav> <!--导航栏结束 -->
+
+<main class="bd-masthead" id="content" role="main">
+    <div class="container main-display">
+        <div class="row align-items-center">
+            <div class="col-6 mx-auto col-md-6 order-md-2">
+                <canvas class="img-fluid mb-3 mb-md-0" id="my_canvas" width="500" height="500"></canvas>
+            </div>
+
+            <div class="col-md-6 order-md-1 text-center text-md-left pr-md-5">
+                <h1 class="mb-3 bd-text-purple-bright">Dijkstra</h1>
+                <p class="lead">
+                    Dijkstra 算法是一种用于计算带权有向图中单源最短路径的算法, 由计算机科学家 Edsger Dijkstra 于 1956 年构思并于 1959 年发表。
+                </p>
+                <p class="lead">
+                    右侧展示一个简单的例子, 寻找由 1点 到其他点的最短距离
+                </p>
+                <table class="lead mb-4 table table-hover answer-table" id="circle-table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>顶点</th>
+                            <th>可到达</th>
+                            <th>距离</th>
+                            <th>路径</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+
+<script src="../static/js/jquery-3.3.1.js"></script>
+<script src="../static/js/bootstrap.js"></script>
+<script src="../static/js/fabric.js"></script>
+<script src="../static/js/extend-fabric.js"></script>
+<script src="../static/js/dijkstra.js"></script>
+
+<script>
+    $(function () {
+        initLineCircle(canvas);
+        blink(0);
+    });
+</script>
+</html>

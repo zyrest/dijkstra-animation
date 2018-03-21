@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <title>Dijkstra算法演示</title>
+
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
+    <link href="../static/css/custom.css" rel="stylesheet">
+
+    <style>
+        /*
+         * Sidebar
+         */
+
+        .sidebar {
+          position: fixed;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          z-index: 100; /* Behind the navbar */
+          padding: 0;
+          box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+        }
+
+        .sidebar-sticky {
+          position: -webkit-sticky;
+          position: sticky;
+          top: 48px; /* Height of navbar */
+          height: calc(100vh - 48px);
+          padding-top: .5rem;
+          overflow-x: hidden;
+          overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+        }
+
+        .sidebar .nav-link {
+          font-weight: 500;
+          color: #333;
+        }
+
+        .sidebar .nav-link .feather {
+          margin-right: 4px;
+          color: #999;
+        }
+
+        .sidebar .nav-link.active {
+          color: #007bff;
+        }
+
+        .sidebar .nav-link:hover .feather,
+        .sidebar .nav-link.active .feather {
+          color: inherit;
+        }
+
+        .nav-btn {
+            color: #f7f7f7; !important;
+        }
+
+        .stay-centre {
+            margin: 0 auto;
+            width: 900px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="site-header sticky-top py-1">
+    <div class="container d-flex flex-column flex-md-row justify-content-between">
+        <a class="py-2" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mx-auto"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg>
+        </a>
+        <a class="py-2 d-none d-md-inline-block" href="index.html">动态演示</a>
+        <a class="py-2 d-none d-md-inline-block active" href="#">高级演示</a>
+        <a class="py-2 d-none d-md-inline-block" href="algorithm.html">算法思想</a>
+        <a class="py-2 d-none d-md-inline-block" href="about.html">关于本站</a>
+        <span class="navbar-text" style="color: #999">
+            详细的Dijkstra算法讲解
+        </span>
+    </div>
+</nav> <!--导航栏结束 -->
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+
+                <ul class="nav flex-column">
+                    <li>
+                        <p class="nav-link" href="#">
+                            <span data-feather="users"></span>
+                            设置图像
+                        </p>
+                    </li>
+
+                    <li class="nav-item">
+                        <p class="nav-link" href="#">
+                            <label>
+                                起始点:
+                                <select id="start-select" class="custom-select" style="width: auto;text-align: right;">
+                                    <option value="0" selected>1</option>
+                                    <option value="1">2</option>
+                                    <option value="2">3</option>
+                                    <option value="3">4</option>
+                                    <option value="3">5</option>
+                                    <option value="3">6</option>
+                                </select>
+                            </label>
+                        </p>
+                    </li>
+
+                    <li class="nav-item">
+                        <p class="nav-link" href="#">
+                            <label>
+                                表示方法:
+                                <select id="method-select" class="custom-select" style="width: auto;text-align: right;">
+                                        <option value="0" selected>逻辑视图</option>
+                                        <option value="1">邻接链表</option>
+                                        <option value="2">邻接矩阵</option>
+                                </select>
+                            </label>
+                        </p>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link nav-btn btn-dark" style="color: #f7f7f7" href="#">
+                            运行Dijkstra
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link nav-btn btn-primary" style="color: #f7f7f7" href="#">
+                            新图形
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+        </nav>
+
+        <!--右上侧展板与右下方结果展示 -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div class="stay-centre">
+                <canvas id="my_canvas" width="900" height="500"></canvas>
+            </div>
+
+
+            <h2>运行结果</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>顶点</th>
+                            <th>可到达</th>
+                            <th>距离</th>
+                            <th>路径</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>是</td>
+                            <td>96</td>
+                            <td>2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+</body>
+
+<!-- Icons -->
+<script src="../static/js/feather.min.js"></script>
+
+<script src="../static/js/jquery-3.3.1.js"></script>
+<script src="../static/js/bootstrap.js"></script>
+<script src="../static/js/fabric.js"></script>
+<!--
+<script src="../static/js/extend-fabric.js"></script>
+<script src="../static/js/dijkstra.js"></script>
+-->
+<script>
+    feather.replace();
+
+    var canvas = new fabric.Canvas('my_canvas', { selection: false});
+    var rect1 = new fabric.Rect({
+        left: 150,
+        top: 82,
+        originX: 'center',
+        originY: 'center',
+        width: 40,
+        height: 40,
+        fill: 'rgba(255,0,0,0.5)',
+        transparentCorners: false
+    });
+
+    var rect2 = new fabric.Rect({
+        left: 150,
+        top: 402,
+        originX: 'center',
+        originY: 'center',
+        width: 40,
+        height: 40,
+        fill: 'rgba(255,0,0,0.5)',
+        transparentCorners: true
+    });
+    canvas.add(rect1);
+    canvas.add(rect2);
+    canvas.renderAll();
+</script>
+</html>
