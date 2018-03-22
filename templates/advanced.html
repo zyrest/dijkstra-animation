@@ -126,13 +126,13 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link nav-btn btn-dark" style="color: #f7f7f7" href="#">
+                        <a id="start-dijkstra" class="nav-link nav-btn btn-dark" style="color: #f7f7f7" href="#">
                             运行Dijkstra
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link nav-btn btn-primary" style="color: #f7f7f7" href="#">
+                        <a id="new-graph" class="nav-link nav-btn btn-primary" style="color: #f7f7f7" href="#">
                             新图形
                         </a>
                     </li>
@@ -151,7 +151,7 @@
 
             <h2>运行结果</h2>
             <div class="table-responsive">
-                <table class="table table-striped table-sm">
+                <table class="table table-striped table-sm" id="answer-table">
                     <thead>
                         <tr>
                             <th>顶点</th>
@@ -160,14 +160,6 @@
                             <th>路径</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>是</td>
-                            <td>96</td>
-                            <td>2</td>
-                        </tr>
-                    </tbody>
                 </table>
             </div>
 
@@ -184,104 +176,37 @@
 <script src="../static/js/jquery-3.3.1.js"></script>
 <script src="../static/js/bootstrap.js"></script>
 <script src="../static/js/fabric.js"></script>
-<script src="../static/js/extend-fabric.js"></script>
 
-<!--
+<script src="../static/js/extend-fabric.js"></script>
 <script src="../static/js/dijkstra.js"></script>
--->
+<script src="../static/js/dijkstra-linear.js"></script>
+
 <script>
     feather.replace();
 
-    var canvas = new fabric.Canvas('my_canvas', { selection: false});
-    fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
-
-    var squareX = 150;
-    var squareY = [82, 146, 210, 274, 338, 402];
-    var squareSize = 40;
-
-    var rectXstart = 230;
-    var rectXoff = 90;
-    var rectY = [82, 146, 210, 274, 338, 402];
-    var rectWidth = 60;
-    var rectHeight = 30;
-
-    var alineXstart = 160;
-    var alineXoff = 90;
-    var alineY = [82, 146, 210, 274, 338, 402];
-    var alineLength = 40;
-
+    var checkSize = 40;
+    var checkXstart = 190;
+    var checkYstart = 90;
+    var checkOff = 40;
 </script>
 
 <script>
-    function makeSquare(x, y, size, labelText) {
-        var r = new fabric.Rect({
-            width: size,
-            height: size,
-            fill: 'white',
-            stroke: 'grey',
-            strokeWeight: 2
-        });
+    function generateChecks() {
+        for (var i = 0; i < totalCircleCount; i++) {
+            var checkY = checkYstart + checkOff * i;
 
-        var t = new fabric.Text(labelText, {
-            fontSize: 17,
-            originX: 'center',
-            originY: 'center'
-        });
+            for (var j = 0; j < totalCircleCount; j++) {
+                var checkX = checkXstart + checkOff * j;
 
-        return new fabric.Group([r, t], {
-            left: x,
-            top: y,
-            selectable: false
-        });
+                var tmpCheck = makeSquare(checkX, checkY, checkSize, String(i*totalCircleCount+j));
+                canvas.add(tmpCheck);
+            }
+        }
+
+        canvas.renderAll();
     }
 
-    function makeTriRect(x, y, rWidth, rHeight, label1, label2) {
-        var r = new fabric.Rect({
-            width: rWidth,
-            height: rHeight,
-            fill: 'white',
-            stroke: 'grey',
-            strokeWeight: 2
-        });
-
-        var fontX = rWidth/3;
-        var t1 = new fabric.Text(label1, {
-            fontSize: 17,
-            left: -fontX
-        });
-
-        var t2 = new fabric.Text(label2, {
-            fontSize: 17
-        });
-
-        var lineX = rWidth/6;
-        var lineY = rHeight/2;
-        var l1 = new fabric.Line([-lineX, -lineY, -lineX, lineY], {
-            fill: 'grey',
-            stroke: 'grey',
-            strokeWidth: 1
-        });
-
-        var l2 = new fabric.Line([lineX, -lineY, lineX, lineY], {
-            fill: 'grey',
-            stroke: 'grey',
-            strokeWidth: 1
-        });
-
-        return new fabric.Group([r, t1, t2, l1, l2], {
-            left: x,
-            top: y,
-            selectable: false
-        })
-    }
-
-    for (var i = 0; i < squareY.length; i++) {
-        canvas.add(makeSquare(squareX, squareY[i], squareSize, String(i+1)));
-        canvas.add(makeTriRect(rectXstart + rectXoff * i, squareY[i], rectWidth, rectHeight, 'a', 'b'));
-    }
-
-    var l = makeLine([alineXstart+alineXoff, alineY[1], alineXstart+alineXoff + alineLength, alineY[1]+1]);
-    canvas.add(l);
-    canvas.renderAll();
+    generateChecks();
 </script>
+
 </html>

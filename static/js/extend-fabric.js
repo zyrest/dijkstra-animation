@@ -91,3 +91,66 @@ function makeLine(coords, labelValue) {
         selectable: false
     });
 }
+
+function makeSquare(x, y, size, labelText) {
+    var r = new fabric.Rect({
+        width: size,
+        height: size,
+        fill: 'white',
+        stroke: 'grey',
+        strokeWeight: 2
+    });
+
+    var t = new fabric.Text(labelText, {
+        fontSize: 17,
+        originX: 'center',
+        originY: 'center'
+    });
+
+    return new fabric.Group([r, t], {
+        left: x,
+        top: y,
+        selectable: false
+    });
+}
+
+function makeTriRect(x, y, rWidth, rHeight, label1, label2) {
+    var r = new fabric.Rect({
+        width: rWidth,
+        height: rHeight,
+        fill: 'white',
+        stroke: 'grey',
+        strokeWeight: 2
+    });
+
+    var fontX = rWidth/3;
+    var t1 = new fabric.Text(label1, {
+        fontSize: 17,
+        fill: 'blue',
+        left: -fontX
+    });
+
+    var t2 = new fabric.Text(label2, {
+        fontSize: 17
+    });
+
+    var lineX = rWidth/6;
+    var lineY = rHeight/2;
+    var l1 = new fabric.Line([-lineX, -lineY, -lineX, lineY], {
+        fill: 'grey',
+        stroke: 'grey',
+        strokeWidth: 1
+    });
+
+    var l2 = new fabric.Line([lineX, -lineY, lineX, lineY], {
+        fill: 'grey',
+        stroke: 'grey',
+        strokeWidth: 1
+    });
+
+    return new fabric.Group([r, t1, t2, l1, l2], {
+        left: x,
+        top: y,
+        selectable: false
+    })
+}
