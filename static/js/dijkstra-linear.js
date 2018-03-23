@@ -1,5 +1,5 @@
 (function () {
-    dijkstra.Linear = function (cvs) {
+    dijkstra.Linear = function (cvs, tableName) {
         /**
          * 必要参数
          * @type {number}
@@ -13,6 +13,7 @@
         var flag = [];
         var path = [];
         var canvas;
+        var table;
 
         /**
          * 参数
@@ -55,7 +56,8 @@
         var linear_actionQueue = [];
 
         var __init__ = function () {
-            canvas = cvs;
+            canvas = cvs || new fabric.Canvas('my_canvas', { selection: false });
+            table = tableName || 'answer-table';
 
             for (var i = 0; i < totalCircleCount; i++) {
                 linear[i] = [];
@@ -79,7 +81,7 @@
                 var reachable = nowDist != MAX_INF;
                 $('#tr-'+end+' td:nth-child(2)').html(reachable ? '是' : '否');
                 $('#tr-'+end+' td:nth-child(3)').html(reachable ? nowDist : 'INF');
-                $('#tr-'+end+' td:nth-child(4)').html(nowPath+1);
+                $('#tr-'+end+' td:nth-child(4)').html(String(nowPath+1));
 
                 var targetRect = null;
                 linear[start].forEach(function (value, index) {
@@ -141,8 +143,6 @@
 
                 for (var l = 0; l < k; l++) {    // 如果重复, 重新生成该线段, 不会重复生成相同线段
                     if (linear_lineFrom[l] === frm && linear_lineTo[l] === to2) {
-                        //console.log('false! re-define l = ' + l);
-
                         do {
                             frm = Math.floor(Math.random() * totalCircleCount);
                             to2 = Math.floor(Math.random() * totalCircleCount);
@@ -153,6 +153,7 @@
                 }
 
                 console.log("第 %s 个, from: %s, to: %s, value is : ", k, frm+1, to2+1, rdmValue);
+
                 linear_lineFrom[k] = frm;
                 linear_lineTo[k] = to2;
                 linear[frm].push({point: to2, value: rdmValue});
@@ -202,7 +203,7 @@
                 html += '</tr>';
                 html += '</tbody>';
 
-                $('#answer-table').append($(html));
+                $('#'+table).append($(html));
             }
 
             canvas.renderAll();
@@ -216,7 +217,7 @@
                 path[i] = -1;
                 $('#tr-'+i+' td:nth-child(2)').html(i === startPt ? '是' : '否');
                 $('#tr-'+i+' td:nth-child(3)').html(i === startPt ? 0 : 'INF');
-                $('#tr-'+i+' td:nth-child(4)').html(i === startPt ? startPt+1 : 0);
+                $('#tr-'+i+' td:nth-child(4)').html(i === startPt ? String(startPt+1) : 0);
             }
             flag[startPt] = true;
             dist[startPt] = 0;
@@ -278,9 +279,34 @@
 
         __init__();
 
-        this.exciting = function (startPt) {
+        this.reGenerate = function () {
+            canvas.clear();
+            $('#'+table).children('tbody').remove();
+
+            totalLineCount = Math.floor(Math.random() * 13) + 7;
+
+            dist = [];
+            flag = [];
+            path = [];
+
+            linear = [];
+            linear_starts = [];
+            linear_childs = [];
+
+            linear_lines = [];
+            linear_lineFrom = [];
+            linear_lineTo = [];
+
+            linear_actionQueue = [];
+
+            __init__();
+
             generateLinear();
             generateSquares();
+        };
+
+        this.exciting = function (startPt) {
+            startPt = parseInt(startPt);
             linear_blink(startPt);
         }
     }

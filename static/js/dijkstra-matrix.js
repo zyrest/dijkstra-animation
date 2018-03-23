@@ -1,6 +1,6 @@
 
 (function () {
-    dijkstra.Matrix = function () {
+    dijkstra.Matrix = function (cvs, tableName) {
         /**
          * 必要参数
          * @type {number}
@@ -13,6 +13,8 @@
         var dist = [];
         var flag = [];
         var path = [];
+        var canvas;
+        var table;
 
         /**
          * 绘图参数
@@ -35,6 +37,9 @@
         var checkActionQueue = [];
 
         var __init__ = function () {
+            canvas = cvs || new fabric.Canvas('my_canvas', { selection: false });
+            table = tableName || 'answer-table';
+
             for (var c = 0; c < totalCircleCount; c++) {
                 checks[c] = [];
                 check_matrix[c] = [];
@@ -142,7 +147,7 @@
                 html += '</tr>';
                 html += '</tbody>';
 
-                $('#answer-table').append($(html));
+                $('#' + table).append($(html));
             }
 
             canvas.renderAll();
@@ -208,9 +213,31 @@
 
         __init__();
 
-        this.exciting = function (startPt) {
+        this.reGenerate = function () {
+            canvas.clear();
+            $('#'+table).children('tbody').remove();
+
+            check_lineFrom = [];
+            check_lineTo = [];
+
+            checks = [];
+            check_matrix = [];
+
+            checkActionQueue = [];
+
+            totalLineCount = Math.floor(Math.random() * 13) + 7;
+
+            dist = [];
+            flag = [];
+            path = [];
+
+            __init__();
+
             generateCheckMatrix();
             generateChecks();
+        };
+        this.exciting = function (startPt) {
+            startPt = parseInt(startPt);
             check_blink(startPt);
         };
 

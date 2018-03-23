@@ -73,10 +73,10 @@
         <a class="py-2" href="#">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mx-auto"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg>
         </a>
-        <a class="py-2 d-none d-md-inline-block" href="index.html">动态演示</a>
+        <a class="py-2 d-none d-md-inline-block" href="/index">动态演示</a>
         <a class="py-2 d-none d-md-inline-block active" href="#">高级演示</a>
-        <a class="py-2 d-none d-md-inline-block" href="algorithm.html">算法思想</a>
-        <a class="py-2 d-none d-md-inline-block" href="about.html">关于本站</a>
+        <a class="py-2 d-none d-md-inline-block" href="/algorithm">算法思想</a>
+        <a class="py-2 d-none d-md-inline-block" href="/about">关于本站</a>
         <span class="navbar-text" style="color: #999">
             详细的Dijkstra算法讲解
         </span>
@@ -105,8 +105,9 @@
                                     <option value="1">2</option>
                                     <option value="2">3</option>
                                     <option value="3">4</option>
-                                    <option value="3">5</option>
-                                    <option value="3">6</option>
+                                    <option value="4">5</option>
+                                    <option value="5">6</option>
+                                    <option value="6">7</option>
                                 </select>
                             </label>
                         </p>
@@ -179,20 +180,47 @@
 
 <script src="../static/js/extend-fabric.js"></script>
 <script src="../static/js/dijkstra.js"></script>
+<script src="../static/js/dijkstra-graph.js"></script>
 <script src="../static/js/dijkstra-linear.js"></script>
 <script src="../static/js/dijkstra-matrix.js"></script>
 
 <script>
     feather.replace();
 
-    var canvas = new fabric.Canvas('my_canvas', { selection: false });
+    $(function () {
+        var canvas = new fabric.Canvas('my_canvas', { selection: false });
 
-    var dij = new dijkstra.Linear(canvas);
-    dij.exciting(0);
-</script>
+        var graDij = new dijkstra.Graph(canvas);
+        var linDij = new dijkstra.Linear(canvas);
+        var matDij = new dijkstra.Matrix(canvas);
 
-<script>
+        var runner = [graDij, linDij, matDij];
+        runner[0].reGenerate();
 
+
+        var $method = $('#method-select');
+        var $startPt = $('#start-select');
+
+        var method = $method.val();
+        $method.change(function () {
+            method = $method.val();
+            runner[method].reGenerate();
+        });
+
+        var startPt = $startPt.val();
+        $startPt.change(function () {
+            startPt = $startPt.val();
+        });
+
+        $('#new-graph').click(function () {
+            runner[method].reGenerate();
+        });
+
+        $('#start-dijkstra').click(function () {
+            runner[method].exciting(startPt);
+        })
+    });
+    //runner[0].exciting(0);
 </script>
 
 </html>

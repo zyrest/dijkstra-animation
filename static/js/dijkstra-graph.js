@@ -1,6 +1,6 @@
 (function () {
 
-    dijkstra.Graph = function (cvs) {
+    dijkstra.Graph = function(cvs, tableName) {
         /**
          * 必要参数
          * @type {number}
@@ -13,13 +13,15 @@
         var dist = [];
         var flag = [];
         var path = [];
+        var canvas;
+        var table;
 
         /**
          *
          * @type {Array}
          */
         var matrix = []; // 记录边的权值
-        var canvas;
+
 
         /**
          * 绘图元素
@@ -30,8 +32,8 @@
         var lineTo = []; // 每条线的终点 0-6
 
         var circle = []; // 所有点的集合
-        var circleX = [50, 270, 250, 350, 80,  90,  375]; // 每个点的left坐标
-        var circleY = [50, 60,  250, 440, 440, 225, 225]; // 每个点的top坐标
+        var circleX = [150, 370, 350, 450, 180,  190,  475]; // 每个点的left坐标
+        var circleY = [50, 60,  250, 440, 441, 225, 226]; // 每个点的top坐标
 
         /**
          * 动画相关
@@ -40,7 +42,9 @@
         var actionQueue = [];
 
         var __init__ = function () {
-            canvas = cvs;
+            canvas = cvs || new fabric.Canvas('my_canvas', { selection: false });
+            table = tableName || 'answer-table';
+
             canvas.on('object:moving', function(e) {
                 var p = e.target;
 
@@ -253,10 +257,42 @@
 
         __init__();
 
-        this.exciting = function (startPt) {
+        this.reGenerate = function () {
+            canvas.clear();
+            $('#'+table).children('tbody').remove();
+
+            totalLineCount = Math.floor(Math.random() * 13) + 7;
+
+            dist = [];
+            flag = [];
+            path = [];
+
+            matrix = []; // 记录边的权值
+
+            line = []; // 所有线的集合, 对象是fabric.Line
+            lineFrom = []; // 每条线的起点 0-6
+            lineTo = []; // 每条线的终点 0-6
+
+            circle = []; // 所有点的集合
+
+            __init__();
+
             generateMatrix();
             generateCircle();
+        };
+
+        this.exciting = function (startPt) {
+            startPt = parseInt(startPt);
             blink(startPt);
         };
+
+        this.circleDisplay = function () {
+            while (true) {
+                if (actionQueue.length === 0) {
+                    this.reGenerate();
+                    this.exciting(0);
+                }
+            }
+        }
     }
 })();
