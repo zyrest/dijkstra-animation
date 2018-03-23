@@ -1,3 +1,4 @@
+fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
 fabric.LineArrow = fabric.util.createClass(fabric.Line, {
     type: 'lineArrow',
@@ -153,4 +154,12 @@ function makeTriRect(x, y, rWidth, rHeight, label1, label2) {
         top: y,
         selectable: false
     })
+}
+
+function makeText(left, top, label) {
+    return new fabric.Text(label, {
+        left: left,
+        top: top,
+        fontSize: 17
+    });
 }

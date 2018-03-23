@@ -180,33 +180,19 @@
 <script src="../static/js/extend-fabric.js"></script>
 <script src="../static/js/dijkstra.js"></script>
 <script src="../static/js/dijkstra-linear.js"></script>
+<script src="../static/js/dijkstra-matrix.js"></script>
 
 <script>
     feather.replace();
 
-    var checkSize = 40;
-    var checkXstart = 190;
-    var checkYstart = 90;
-    var checkOff = 40;
+    var canvas = new fabric.Canvas('my_canvas', { selection: false });
+
+    var dij = new dijkstra.Linear(canvas);
+    dij.exciting(0);
 </script>
 
 <script>
-    function generateChecks() {
-        for (var i = 0; i < totalCircleCount; i++) {
-            var checkY = checkYstart + checkOff * i;
 
-            for (var j = 0; j < totalCircleCount; j++) {
-                var checkX = checkXstart + checkOff * j;
-
-                var tmpCheck = makeSquare(checkX, checkY, checkSize, String(i*totalCircleCount+j));
-                canvas.add(tmpCheck);
-            }
-        }
-
-        canvas.renderAll();
-    }
-
-    generateChecks();
 </script>
 
 </html>
