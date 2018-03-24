@@ -1,10 +1,192 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
     <title>Dijkstra 算法详解</title>
+
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
+    <link href="../static/css/custom.css" rel="stylesheet">
+
+    <style>
+        .starter-template {
+          padding: 3rem 1.5rem;
+          text-align: left;
+        }
+    </style>
 </head>
+
 <body>
-未完成......
+
+<nav class="site-header sticky-top py-1">
+    <div class="container d-flex flex-column flex-md-row justify-content-between">
+        <a class="py-2" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="d-block mx-auto"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg>
+        </a>
+        <a class="py-2 d-none d-md-inline-block active" href="/index">动态演示</a>
+        <a class="py-2 d-none d-md-inline-block" href="/advanced">高级演示</a>
+        <a class="py-2 d-none d-md-inline-block" href="#">算法思想</a>
+        <a class="py-2 d-none d-md-inline-block" href="/about">关于本站</a>
+        <span class="navbar-text" style="color: #999">
+            详细的Dijkstra算法讲解
+        </span>
+    </div>
+</nav> <!--导航栏结束 -->
+
+<main role="main" class="container">
+
+    <div class="starter-template">
+        <h1>Dijkstra 单源最短路径算法</h1>
+        <p class="lead">
+            Dijkstra 算法是一种用于计算带权有向图中单源最短路径（SSSP：Single-Source Shortest Path）的算法，由计算机科学家 Edsger Dijkstra 于 1956 年构思并于 1959 年发表。其解决的问题是：给定图 G 和源顶点 v，找到从 v 至图中所有顶点的最短路径。
+            <br>
+            <img src="../static/img/first.gif">
+            <br>
+        </p>
+        <div>
+            Dijkstra 算法描述：
+            <ol>
+                <li>创建源顶点 v 到图中所有顶点的距离的集合 distSet，为图中的所有顶点指定一个距离值，初始均为 Infinite，源顶点距离为 0；</li>
+                <li>创建 SPT（Shortest Path Tree）集合 sptSet，用于存放包含在 SPT 中的顶点；</li>
+                <li>
+                    如果 sptSet 中并没有包含所有的顶点，则：
+                    <ul>
+                        <li>选中不包含在 sptSet 中的顶点 u，u 为当前 sptSet 中未确认的最短距离顶点；</li>
+                        <li>将 u 包含进 sptSet；</li>
+                        <li>更新 u 的所有邻接顶点的距离值；</li>
+                    </ul>
+                </li>
+            </ol>
+            伪码实现如下：
+            <pre>
+function Dijkstra(Graph, source):
+    dist[source] ← 0          // Distance from source to source
+    prev[source] ← undefined  // Previous node in optimal path initialization
+
+    for each vertex v in Graph:  // Initialization
+        if v ≠ source            // Where v has not yet been removed from Q (unvisited nodes)
+            dist[v] ← infinity   // Unknown distance function from source to v
+            prev[v] ← undefined  // Previous node in optimal path from source
+        end if
+        add v to Q               // All nodes initially in Q (unvisited nodes)
+    end for
+
+    while Q is not empty:
+        u ← vertex in Q with min dist[u]  // Source node in first case
+        remove u from Q
+
+        for each neighbor v of u:         // where v has not yet been removed from Q.
+            alt ← dist[u] + length(u, v)
+            if alt < dist[v]:             // A shorter path to v has been found
+                dist[v] ← alt
+                prev[v] ← u
+            end if
+        end for
+    end while
+            </pre>
+
+            <p>例如，下面是一个包含 9 个顶点的图，每条边分别标识了距离。</p>
+            <p>
+                <img style="display: block; margin-left: auto; margin-right: auto;" src="../static/img/second.png" alt="" />
+            </p>
+            <p>源顶点 source = 0，初始时，</p>
+            <ul>
+                <li>
+                    <span style="line-height: 1.5;">sptSet = {false, false</span><span style="line-height: 1.5;">, false</span>
+                    <span style="line-height: 1.5;">, false</span>
+                    <span style="line-height: 1.5;">, false</span>
+                    <span style="line-height: 1.5;">, false</span>
+                    <span style="line-height: 1.5;">, false</span>
+                    <span style="line-height: 1.5;">, false</span>
+                    <span style="line-height: 1.5;">, false</span>
+                    <span style="line-height: 1.5;">};</span>
+                </li>
+                <li>
+                    <span style="line-height: 1.5;">distSet = {<strong>0</strong>, INF, INF, INF, INF, INF, INF, INF, INF};</span>
+                </li>
+            </ul>
+            <p>将 0 包含至 sptSet 中；</p>
+            <ul>
+                <li>sptSet = {<strong>true</strong>, false, false, false, false, false, false, false, false};</li>
+            </ul>
+            <p>更新 0 至其邻接节点的距离；</p>
+            <ul>
+                <li>distSet = {<strong>0</strong>, <strong>4</strong>, INF, INF, INF, INF, INF, <strong>8</strong>, INF};</li>
+            </ul>
+            <p>
+                <img style="display: block; margin-left: auto; margin-right: auto;" src="../static/img/third.png" alt="" />
+            </p>
+            <p>选择不在 sptSet 中的 Min Distance 的顶点，为顶点 1，则将 1 包含至 sptSet；</p>
+            <ul>
+                <li>sptSet = {<strong>true</strong>, <strong>true</strong>, false, false, false, false, false, false, false};</li>
+            </ul>
+            <p>更新 1 至其邻接节点的距离；</p>
+            <ul>
+                <li>distSet = {<strong>0</strong>, <strong>4</strong>, <strong>12</strong>, INF, INF, INF, INF, <strong>8</strong>, INF};</li>
+            </ul>
+            <p>
+                <img style="display: block; margin-left: auto; margin-right: auto;" src="../static/img/fourth.png" alt="" />
+            </p>
+            <p>选择不在 sptSet 中的 Min Distance 的顶点，为顶点 7，则将 7 包含至 sptSet；</p>
+            <ul>
+                <li>sptSet = {<strong>true</strong>, <strong>true</strong>, false, false,&nbsp;false, false, false, <strong>true</strong>, false};</li>
+            </ul>
+            <p>更新 7 至其邻接节点的距离；</p>
+            <ul>
+                 <li>distSet = {<strong>0</strong>, <strong>4</strong>, <strong>12</strong>, INF, INF, INF, <strong>9</strong>, <strong>8</strong>, <strong>15</strong>};</li>
+            </ul>
+            <p>
+                <img style="display: block; margin-left: auto; margin-right: auto;" src="../static/img/fifth.png" alt=""/>
+            </p>
+            <p>选择不在 sptSet 中的 Min Distance 的顶点，为顶点 6，则将 6 包含至 sptSet；</p>
+            <ul>
+                <li>sptSet = {<strong>true</strong>,&nbsp;<strong>true</strong>, false, false,&nbsp;false, false, <strong>true</strong>,&nbsp;<strong>true</strong>, false};</li>
+            </ul>
+            <p>更新 6 至其邻接节点的距离；</p>
+            <ul>
+                <li>distSet = {<strong>0</strong>,&nbsp;<strong>4</strong>,&nbsp;<strong>12</strong>, INF, INF, <strong>11</strong>,&nbsp;<strong>9</strong>,&nbsp;<strong>8</strong>,&nbsp;<strong>15</strong>};</li>
+            </ul>
+            <p>
+                <img style="display: block; margin-left: auto; margin-right: auto;" src="../static/img/sixth.png" alt="" />
+            </p>
+            <p>以此类推，直到遍历结束。</p>
+            <ul>
+                <li>sptSet = {<strong>true</strong>,&nbsp;<strong>true</strong>, <strong>true</strong>, <strong>true</strong>, <strong>true</strong>, <strong>true</strong>,&nbsp;<strong>true</strong>,&nbsp;<strong>true</strong>, <strong>true</strong>};</li>
+                <li>distSet = {<strong>0</strong>,&nbsp;<strong>4</strong>,&nbsp;<strong>12</strong>, <strong>19</strong>, <strong>21</strong>,&nbsp;<strong>11</strong>,&nbsp;<strong>9</strong>,&nbsp;<strong>8</strong>,&nbsp;<strong>14</strong>};</li>
+            </ul>
+            <p>
+                <img style="display: block; margin-left: auto; margin-right: auto;" src="../static/img/seventh.png" alt="" />
+            </p>
+            <p>最终结果为源顶点 0 至所有顶点的距离：</p>
+            <div class="cnblogs_code">
+            <pre>
+            Vertex   Distance from Source
+            0                0
+            1                4
+            2                12
+            3                19
+            4                21
+            5                11
+            6                9
+            7                8
+            8                14
+            </pre>
+            </div>
+        </div>
+
+        <div>
+            Python实现:
+            <img src="../static/img/code.png"/>
+        </div>
+    </div>
+
+</main><!-- /.container -->
 </body>
+
+<script src="../static/js/jquery-3.3.1.js"></script>
+<script src="../static/js/bootstrap.js"></script>
+
 </html>
